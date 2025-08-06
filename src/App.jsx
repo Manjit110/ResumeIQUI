@@ -79,7 +79,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-slate-100 to-blue-100 font-sans relative">
       {/* Profile Photo */}
       <img
-        src="/profile.jpg"
+        src={process.env.PUBLIC_URL + "/profile.jpg"}
         alt="Manjit Singh"
         className="rounded-full border-4 border-blue-300 shadow-lg w-44 h-44 object-cover mt-12 mb-4"
       />
