@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/ResumeIQ/static/css/main.fb7a2fdf.css",
+    "main.js": "/ResumeIQ/static/js/main.2bf26593.js",
+    "index.html": "/ResumeIQ/index.html",
+    "main.fb7a2fdf.css.map": "/ResumeIQ/static/css/main.fb7a2fdf.css.map",
+    "main.2bf26593.js.map": "/ResumeIQ/static/js/main.2bf26593.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fb7a2fdf.css",
+    "static/js/main.2bf26593.js"
+  ]
+}
