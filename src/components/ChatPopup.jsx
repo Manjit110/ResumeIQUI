@@ -34,7 +34,7 @@ export default function ChatPopup() {
       ]);
 
       // Call FastAPI backend
-      const res = await axios.post("http://127.0.0.1:8000/ask", { question: input });
+      const res = await axios.post("http://192.168.2.17:8000/ask", { question: input });
 
       // Safely extract answer text
       let aiText = "Sorry, no answer.";
