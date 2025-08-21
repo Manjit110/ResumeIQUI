@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+// No state needed here
+// import React from "react";
 import ChatPopup from "./components/ChatPopup";
 import DownloadResumeButton from "./components/DownloadResumeButton";
 import Timeline from "./components/Timeline";
 import EducationTimeline from "./components/EducationTimeline";
+import HeroSection from "./components/HeroSection";
 
 const allSkills = [
   "Java 17", "Python", "Shell", "Spring Boot 2/3", "Spring MVC", "REST APIs", "Catalys FIX Engine", "Docker", "Podman",
@@ -58,45 +60,70 @@ const experience = [
 ];
 
 const education = [
-  {
-    degree: "MEngg.: Software Engineering",
-    school: "Concordia University",
-    location: "Montreal",
-    date: "08/2022"
-  },
-  {
-    degree: "B.E.: Computer Science & Engineering",
-    school: "Punjab University",
-    location: "Chandigarh",
-    date: "09/2020"
-  }
+  { degree: "MEngg.: Software Engineering", school: "Concordia University", location: "Montreal", date: "08/2022" },
+  { degree: "B.E.: Computer Science & Engineering", school: "Punjab University", location: "Chandigarh", date: "09/2020" }
 ];
 
 export default function App() {
-  const [showChat, setShowChat] = useState(false);
+  // helper to scroll to the absolute bottom smoothly
+  const scrollToBottom = () => {
+    const h = Math.max(
+      document.body.scrollHeight,
+      document.documentElement.scrollHeight
+    );
+    window.scrollTo({ top: h, behavior: "smooth" });
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-slate-100 to-blue-100 font-sans relative">
-      {/* Profile Photo */}
-      <img
-        src={process.env.PUBLIC_URL + "/profile.jpg"}
-        alt="Manjit Singh"
-        className="rounded-full border-4 border-blue-300 shadow-lg w-44 h-44 object-cover mt-12 mb-4"
-      />
-      {/* Name & Contact */}
-      <h1 className="text-4xl font-bold mb-1">Manjit Singh</h1>
-      <p className="text-lg text-gray-700 mb-1">Toronto, ON | +1 (514)-549-1485 | <a href="mailto:manjitsingh07.1998@gmail.com" className="underline">Email</a></p>
-      <a
-        href="https://www.linkedin.com/in/manjit-singh-705996164/"
-        className="text-blue-600 hover:underline text-sm mb-6"
-        target="_blank"
-        rel="noopener noreferrer"
+    <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-slate-100 to-blue-100 font-sans relative pb-16 scroll-smooth">
+      {/* Primary profile section */}
+      <HeroSection />
+
+      {/* 🔝 Top-right scroll cue — scrolls ALL the way down */}
+      <button
+        onClick={scrollToBottom}
+        className="fixed top-4 right-4 z-50 group"
+        aria-label="Scroll to bottom"
+        type="button"
       >
-        linkedin.com/in/manjit-singh-705996164
-      </a>
+        <div className="p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-blue-500 to-indigo-500 shadow-lg">
+          <div className="rounded-full px-3 py-1.5 bg-white/90 backdrop-blur text-gray-900 text-xs font-semibold flex items-center gap-1.5 hover:bg-white transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 translate-y-0.5 group-hover:translate-y-1 transition-transform animate-bounce"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M12 16l-6-6h12l-6 6z" />
+            </svg>
+            <span className="hidden md:inline-block tracking-wide">SCROLL</span>
+            <span className="md:hidden inline-block">More</span>
+          </div>
+        </div>
+      </button>
+
+      {/* Contact (kept, but without duplicate photo) */}
+      <div className="text-center -mt-2 mb-6">
+        <h1 className="text-3xl font-bold mb-1">Manjit Singh</h1>
+        <p className="text-lg text-gray-700 mb-1">
+          Toronto, ON • +1 (514)-549-1485 • <a href="mailto:manjitsingh07.1998@gmail.com" className="underline">Email</a>
+        </p>
+        <p className="text-lg text-gray-700 mb-1">
+          India • +91 81785 73640 • <a href="mailto:ms6554353@gmail.com" className="underline">Email</a>
+        </p>
+        <a
+          href="https://www.linkedin.com/in/manjit-singh-705996164/"
+          className="text-blue-600 hover:underline text-sm"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          linkedin.com/in/manjit-singh-705996164
+        </a>
+      </div>
 
       {/* AI Status & Skills */}
-      <div className="flex flex-col items-center mb-6">
+      <div id="content" className="flex flex-col items-center mb-6">
         {/* Live AI Badge */}
         <div className="flex items-center mb-3">
           <span className="relative flex h-4 w-4 mr-2">
@@ -105,32 +132,112 @@ export default function App() {
           </span>
           <span className="text-lg font-bold text-green-700">Live: AI is ON</span>
         </div>
-        <div className="flex flex-wrap gap-2 justify-center">
-          {allSkills.map(skill => (
-            <span key={skill} className="bg-slate-200 text-slate-800 px-3 py-1 rounded-xl text-sm font-medium">{skill}</span>
-          ))}
+
+        {/* CTA with inward arrows */}
+        <div className="flex items-center gap-3 mb-8">
+          {/* Left arrow → pointing to button */}
+          <span className="hidden sm:inline-flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-pink-500 animate-pulse drop-shadow"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M13.5 5.5l-1.4 1.4 4.1 4.1H4v2h12.2l-4.1 4.1 1.4 1.4L20 12 13.5 5.5z" />
+            </svg>
+          </span>
+
+          {/* The button itself */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("open-chat"))}
+            className="
+              inline-flex items-center gap-2
+              rounded-xl
+              bg-gradient-to-r from-pink-500 via-black to-blue-500
+              px-5 py-2.5
+              text-white font-semibold shadow-lg
+              hover:shadow-pink-500/40 hover:scale-105 transition
+            "
+            type="button"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                d="M8 10h8M8 14h5m-9 6l2-2h9a4 4 0 004-4V7a4 4 0 00-4-4H7a4 4 0 00-4 4v11z" />
+            </svg>
+            Chat with AI about me
+          </button>
+
+          {/* Right arrow ← pointing to button */}
+          <span className="hidden sm:inline-flex">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-blue-500 animate-pulse drop-shadow rotate-180"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M13.5 5.5l-1.4 1.4 4.1 4.1H4v2h12.2l-4.1 4.1 1.4 1.4L20 12 13.5 5.5z" />
+            </svg>
+          </span>
+        </div>
+
+        {/* Stylish Skills (capped width) */}
+        <div className="mx-auto max-w-[50rem] w-full">
+          <ul className="flex flex-wrap justify-center gap-2">
+            {allSkills.map((skill) => (
+              <li
+                key={skill}
+                className="
+                  group select-none
+                  rounded-full border border-gray-200 dark:border-gray-700
+                  bg-white/70 dark:bg-white/5
+                  px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-200
+                  shadow-sm backdrop-blur
+                  hover:shadow-md transition
+                  hover:-translate-y-0.5
+                "
+              >
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 group-hover:scale-110 transition-transform"></span>
+                  {skill}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
-      {/* Work Experience Timeline */}
+      {/* Work Experience */}
       <div className="w-full max-w-3xl px-4 mb-8">
         <h2 className="text-2xl font-bold mb-4">Work Experience</h2>
         <Timeline experience={experience} />
       </div>
 
-      {/* Education Timeline */}
+      {/* Education */}
       <div className="w-full max-w-3xl px-4 mb-8">
         <h2 className="text-2xl font-bold mb-4">Education</h2>
         <EducationTimeline education={education} />
       </div>
 
-      <DownloadResumeButton />
+      {/* Resume */}
+      <div className="mb-12">
+        <div className="flex gap-4 justify-center">
+          <DownloadResumeButton />
+        </div>
+      </div>
 
-      {/* Chat Button + Popup */}
-      <ChatPopup show={showChat} setShow={setShowChat} />
+      {/* Chat Popup (self-managed) */}
+      <ChatPopup />
 
       {/* Footer */}
-      <footer className="fixed bottom-2 w-full text-center text-gray-400 text-xs">
+      <footer className="w-full text-center text-gray-400 text-xs py-4">
         © 2025 Manjit Singh
       </footer>
     </div>
