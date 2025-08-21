@@ -1,16 +1,13 @@
+// src/App.jsx
 // No state needed here globally
 import ChatPopup from "./components/ChatPopup";
 import DownloadResumeButton from "./components/DownloadResumeButton";
 import HeroSection from "./components/HeroSection";
 import ParticleBackground from "./components/ParticleBackground";
-import ContactCTA from "./components/ContactCTA"; 
+import ContactCTA from "./components/ContactCTA";
 import InteractiveTimeline from "./components/InteractiveTimeline";
 import ExperienceDetails from "./components/ExperienceDetails";
 import EducationGrid from "./components/EducationGrid";
-
-
-
-
 
 const allSkills = [
   "Java 17", "Python", "Shell", "Spring Boot 2/3", "Spring MVC", "REST APIs", "Catalys FIX Engine", "Docker", "Podman",
@@ -74,168 +71,157 @@ const education = [
 ];
 
 export default function App() {
-  // helper to scroll to the absolute bottom smoothly
   const scrollToBottom = () => {
     const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
     window.scrollTo({ top: h, behavior: "smooth" });
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-slate-100 to-blue-100 font-sans relative pb-16 scroll-smooth">
+    <div
+      className="
+        min-h-screen w-full
+        overflow-x-hidden
+        flex flex-col items-center
+        bg-gradient-to-b from-blue-50 to-blue-100
+        font-sans relative pb-16 scroll-smooth
+      "
+    >
       <ParticleBackground />
 
       <div className="relative z-10 w-full flex flex-col items-center">
-      {/* Primary profile section */}
-      
-      <HeroSection />
+        {/* Hero / profile */}
+        <HeroSection />
 
-      {/* 🔝 Top-right scroll cue — scrolls ALL the way down */}
-      <button
-        onClick={scrollToBottom}
-        className="fixed top-4 right-4 z-50 group"
-        aria-label="Scroll to bottom"
-        type="button"
-      >
-        <div className="p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-blue-500 to-indigo-500 shadow-lg">
-          <div className="rounded-full px-3 py-1.5 bg-white/90 backdrop-blur text-gray-900 text-xs font-semibold flex items-center gap-1.5 hover:bg-white transition">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 translate-y-0.5 group-hover:translate-y-1 transition-transform animate-bounce"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M12 16l-6-6h12l-6 6z" />
-            </svg>
-            <span className="hidden md:inline-block tracking-wide">SCROLL</span>
-            <span className="md:hidden inline-block">More</span>
+        {/* Top-right scroll cue */}
+        <button
+          onClick={scrollToBottom}
+          className="fixed top-4 right-4 z-50 group"
+          aria-label="Scroll to bottom"
+          type="button"
+        >
+          <div className="p-[2px] rounded-full bg-gradient-to-r from-pink-500 via-blue-500 to-indigo-500 shadow-lg">
+            <div className="rounded-full px-3 py-1.5 bg-white/90 backdrop-blur text-gray-900 text-xs font-semibold flex items-center gap-1.5 hover:bg-white transition">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 translate-y-0.5 group-hover:translate-y-1 transition-transform animate-bounce" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 16l-6-6h12l-6 6z" />
+              </svg>
+              <span className="hidden md:inline-block tracking-wide">SCROLL</span>
+              <span className="md:hidden inline-block">More</span>
+            </div>
           </div>
-        </div>
-      </button>
+        </button>
 
-      
-      {/* 🔥 Recruiter-friendly contact CTA */}
-      <ContactCTA />
-              
+        {/* Contact card */}
+        <ContactCTA />
 
-      {/* AI Status & Skills */}
-      <div id="content" className="flex flex-col items-center mb-6">
-        {/* Live AI Badge */}
-        <div className="flex items-center mb-3">
-          <span className="relative flex h-4 w-4 mr-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
-          </span>
-          <span className="text-lg font-bold text-green-700">Live: AI is ON</span>
-        </div>
+        {/* Live badge + Chat CTA */}
+        <div id="content" className="flex flex-col items-center mb-6">
+          <div className="flex items-center mb-3">
+            <span className="relative flex h-4 w-4 mr-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500"></span>
+            </span>
+            <span className="text-lg font-bold text-green-700">Live: AI is ON</span>
+          </div>
 
-        {/* CTA with inward arrows */}
-        <div className="flex items-center gap-3 mb-8">
-          {/* Left arrow → pointing to button */}
-          <span className="hidden sm:inline-flex">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-pink-500 animate-pulse drop-shadow"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
+          <div className="flex items-center gap-3 mb-8">
+            <span className="hidden sm:inline-flex">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-pink-500 animate-pulse drop-shadow" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M13.5 5.5l-1.4 1.4 4.1 4.1H4v2h12.2l-4.1 4.1 1.4 1.4L20 12 13.5 5.5z" />
+              </svg>
+            </span>
+
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("open-chat"))}
+              className="
+                inline-flex items-center gap-2
+                rounded-xl
+                bg-gradient-to-r from-pink-500 via-black to-blue-500
+                px-5 py-2.5
+                text-white font-semibold shadow-lg
+                hover:shadow-pink-500/40 hover:scale-105 transition
+              "
+              type="button"
             >
-              <path d="M13.5 5.5l-1.4 1.4 4.1 4.1H4v2h12.2l-4.1 4.1 1.4 1.4L20 12 13.5 5.5z" />
-            </svg>
-          </span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h8M8 14h5m-9 6l2-2h9a4 4 0 004-4V7a4 4 0 00-4-4H7a4 4 0 00-4 4v11z" />
+              </svg>
+              AI gossip: All about Manjit 🔥
+            </button>
 
-          {/* The button itself */}
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent("open-chat"))}
+            <span className="hidden sm:inline-flex">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-blue-500 animate-pulse drop-shadow rotate-180" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M13.5 5.5l-1.4 1.4 4.1 4.1H4v2h12.2l-4.1 4.1 1.4 1.4L20 12 13.5 5.5z" />
+              </svg>
+            </span>
+          </div>
+
+          {/* Interactive horizontal timeline */}
+          <InteractiveTimeline items={experience} />
+
+          {/* ===== Skills (horizontal, snap, invisible scrollbar) ===== */}
+<section className="w-full mt-2">
+  <div className="mx-auto max-w-screen-lg px-4">
+    <h2 className="text-2xl font-bold text-slate-900 text-center mb-4">Skills</h2>
+
+    {/* Edge-to-edge scroll without body overflow */}
+    <div
+      className="
+        -mx-4 px-4
+        overflow-x-auto no-scrollbar scroll-smooth
+        snap-x snap-mandatory
+        touch-pan-x overscroll-x-contain
+      "
+      aria-label="Scroll horizontally to view all skills"
+    >
+      <ul className="flex items-stretch gap-2 sm:gap-2.5 py-1 min-w-max">
+        {allSkills.map((skill) => (
+          <li
+            key={skill}
             className="
-              inline-flex items-center gap-2
-              rounded-xl
-              bg-gradient-to-r from-pink-500 via-black to-blue-500
-              px-5 py-2.5
-              text-white font-semibold shadow-lg
-              hover:shadow-pink-500/40 hover:scale-105 transition
+              snap-start shrink-0
+              rounded-full border border-gray-200 dark:border-gray-700
+              bg-white/70 dark:bg-white/5
+              px-3.5 py-1.5
+              text-xs sm:text-sm font-medium leading-tight
+              text-gray-800 dark:text-gray-200
+              shadow-sm backdrop-blur
+              hover:shadow-md transition hover:-translate-y-0.5
+              break-words
             "
-            type="button"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-white"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                d="M8 10h8M8 14h5m-9 6l2-2h9a4 4 0 004-4V7a4 4 0 00-4-4H7a4 4 0 00-4 4v11z" />
-            </svg>
-            AI gossip: All about Manjit 🔥
-          </button>
+            <span className="inline-flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500" />
+              {skill}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+{/* ===== End Skills ===== */}
 
-          {/* Right arrow ← pointing to button */}
-          <span className="hidden sm:inline-flex">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-blue-500 animate-pulse drop-shadow rotate-180"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M13.5 5.5l-1.4 1.4 4.1 4.1H4v2h12.2l-4.1 4.1 1.4 1.4L20 12 13.5 5.5z" />
-            </svg>
-          </span>
         </div>
 
-      {/* NEW: Interactive horizontal timeline */}
-       <InteractiveTimeline items={experience} />
-
-
-        {/* Stylish Skills (capped width) */}
-        <div className="mx-auto max-w-[50rem] w-full">
-          <ul className="flex flex-wrap justify-center gap-2">
-            {allSkills.map((skill) => (
-              <li
-                key={skill}
-                className="
-                  group select-none
-                  rounded-full border border-gray-200 dark:border-gray-700
-                  bg-white/70 dark:bg-white/5
-                  px-4 py-2 text-sm font-medium text-gray-800 dark:text-gray-200
-                  shadow-sm backdrop-blur
-                  hover:shadow-md transition
-                  hover:-translate-y-0.5
-                "
-              >
-                <span className="inline-flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 group-hover:scale-110 transition-transform"></span>
-                  {skill}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Detailed but collapsible */}
-       <ExperienceDetails items={experience} />
-
-        {/* Compact education tiles */}
+        {/* Details / Education */}
+        <ExperienceDetails items={experience} />
         <EducationGrid items={education} />
 
-
-      {/* Resume */}
-      <div className="mb-12">
-        <div className="flex gap-4 justify-center">
-          <DownloadResumeButton />
+        {/* Resume */}
+        <div className="mb-12">
+          <div className="flex gap-4 justify-center">
+            <DownloadResumeButton />
+          </div>
         </div>
+
+        {/* Chat */}
+        <ChatPopup />
+
+        {/* Footer */}
+        <footer className="w-full text-center text-gray-400 text-xs py-2">
+          © 2025 Manjit Singh
+        </footer>
       </div>
-
-      {/* Chat Popup (self-managed) */}
-      <ChatPopup />
-
-      {/* Footer */}
-      <footer className="w-full text-center text-gray-400 text-xs py-2">
-        © 2025 Manjit Singh
-      </footer>
-    </div>
     </div>
   );
 }
