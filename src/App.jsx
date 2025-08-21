@@ -1,17 +1,16 @@
-// Use state for small UI interactions
-import { useState } from "react";
+// No state needed here globally
 import ChatPopup from "./components/ChatPopup";
 import DownloadResumeButton from "./components/DownloadResumeButton";
-import Timeline from "./components/Timeline";
-import EducationTimeline from "./components/EducationTimeline";
 import HeroSection from "./components/HeroSection";
+import ParticleBackground from "./components/ParticleBackground";
+import ContactCTA from "./components/ContactCTA"; 
+import InteractiveTimeline from "./components/InteractiveTimeline";
+import ExperienceDetails from "./components/ExperienceDetails";
+import EducationGrid from "./components/EducationGrid";
 
-// External icon library (proper icons only)
-import { FaLinkedin, FaPhoneAlt } from "react-icons/fa";
-import { MdEmail } from "react-icons/md";
 
-import { CA } from "country-flag-icons/react/3x2";
-import { IN } from "country-flag-icons/react/3x2";
+
+
 
 const allSkills = [
   "Java 17", "Python", "Shell", "Spring Boot 2/3", "Spring MVC", "REST APIs", "Catalys FIX Engine", "Docker", "Podman",
@@ -26,6 +25,7 @@ const experience = [
     company: "CIBC",
     location: "Toronto, Canada",
     dates: "09/2023 – 06/2025",
+    logo: process.env.PUBLIC_URL + "/logos/cibc.png",
     details: [
       "Modernized and re-architected a suite of event-driven microservices (Java 8 → 17, Spring Boot 2 → 3), reducing average API and job execution times by 20%, containerizing applications with Docker/Podman for rapid scaling, and improving uptime and cost-efficiency by migrating from IBM Solaris to RHEL servers.",
       "Enhanced system scalability, security, and reliability by introducing NGINX and F5 load balancers for high availability, implementing IP whitelisting and audit logging for secure API access, and supporting maintainability through thorough system documentation.",
@@ -44,6 +44,7 @@ const experience = [
     company: "Keyword Studios",
     location: "Montreal, Canada",
     dates: "03/2023 – 09/2023",
+    logo: process.env.PUBLIC_URL + "/logos/game.png",
     details: [
       "Designed & executed test plans for Meta Quest (Oculus) VR titles in Unity/C#, using Quest dev tools for performance telemetry.",
       "Logged reproducible defects with 'Action – Expected – Result' Jira titles; prioritized severity and tracked 100+ issues across sprints.",
@@ -56,6 +57,7 @@ const experience = [
     company: "SASE Laboratory, DRDO",
     location: "Chandigarh, India",
     dates: "01/2020 – 06/2020",
+    logo: process.env.PUBLIC_URL + "/logos/drdo.png",
     details: [
       "Developed a Python-based backend service and automated ML pipeline to predict snow-avalanche risk for Indian Army bases using KNN, SVM, and ANN (83% accuracy).",
       "Implemented data ingestion and auto-preprocessing flows from high-altitude sensors, enabling real-time decision support.",
@@ -67,8 +69,8 @@ const experience = [
 ];
 
 const education = [
-  { degree: "MEngg.: Software Engineering", school: "Concordia University", location: "Montreal", date: "08/2022" },
-  { degree: "B.E.: Computer Science & Engineering", school: "Punjab University", location: "Chandigarh", date: "09/2020" }
+  { degree: "MEngg.: Software Engineering", school: "Concordia University", location: "Montreal", date: "08/2022", logo: process.env.PUBLIC_URL + "/logos/concordia.png" },
+  { degree: "B.E.: Computer Science & Engineering", school: "Punjab University", location: "Chandigarh", date: "09/2020", logo: process.env.PUBLIC_URL + "/logos/panjab.jpg" }
 ];
 
 export default function App() {
@@ -78,31 +80,13 @@ export default function App() {
     window.scrollTo({ top: h, behavior: "smooth" });
   };
 
-  // simple "click to reveal" popovers for contact icons
-  const [openInfo, setOpenInfo] = useState(null);
-  const toggle = (key) => setOpenInfo((prev) => (prev === key ? null : key));
-
-  const IconReveal = ({ id, icon: Icon, label, children }) => (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => toggle(id)}
-        aria-label={label}
-        className="p-2 rounded-full bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-gray-800 shadow-sm hover:-translate-y-0.5 hover:shadow transition text-gray-800 dark:text-gray-200"
-      >
-        <Icon className="text-xl" />
-      </button>
-      {openInfo === id && (
-        <div className="absolute left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap rounded-xl border border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-lg px-3 py-1.5 text-sm z-20">
-          {children}
-        </div>
-      )}
-    </div>
-  );
-
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-slate-100 to-blue-100 font-sans relative pb-16 scroll-smooth">
+      <ParticleBackground />
+
+      <div className="relative z-10 w-full flex flex-col items-center">
       {/* Primary profile section */}
+      
       <HeroSection />
 
       {/* 🔝 Top-right scroll cue — scrolls ALL the way down */}
@@ -129,48 +113,10 @@ export default function App() {
         </div>
       </button>
 
-      {/* Contact (icons + flags; Canada line, India line) */}
-      <div className="text-center -mt-2 mb-6">
-        <h1 className="text-3xl font-bold mb-2">Manjit Singh</h1>
-
-        {/* Canada line */}
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <CA title="Canada" className="w-7 h-auto rounded-[2px] shadow" />
-          <span className="text-sm text-gray-600">Canada</span>
-          <div className="flex items-center gap-2">
-            <IconReveal id="caPhone" icon={FaPhoneAlt} label="Canada phone">
-              <a href="tel:+15145491485" className="hover:underline">+1 (514) 549-1485</a>
-            </IconReveal>
-            <IconReveal id="caEmail" icon={MdEmail} label="Canada email">
-              <a href="mailto:manjitsingh07.1998@gmail.com" className="hover:underline">manjitsingh07.1998@gmail.com</a>
-            </IconReveal>
-            <IconReveal id="linkedin" icon={FaLinkedin} label="LinkedIn">
-              <a
-                href="https://www.linkedin.com/in/manjit-singh-705996164/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline"
-              >
-                linkedin.com/in/manjit-singh-705996164
-              </a>
-            </IconReveal>
-          </div>
-        </div>
-
-        {/* India line */}
-        <div className="flex items-center justify-center gap-3">
-          <IN title="India" className="w-7 h-auto rounded-[2px] shadow" />
-          <span className="text-sm text-gray-600">India</span>
-          <div className="flex items-center gap-2">
-            <IconReveal id="inPhone" icon={FaPhoneAlt} label="India phone">
-              <a href="tel:+918178573640" className="hover:underline">+91 81785 73640</a>
-            </IconReveal>
-            <IconReveal id="inEmail" icon={MdEmail} label="India email">
-              <a href="mailto:ms6554353@gmail.com" className="hover:underline">ms6554353@gmail.com</a>
-            </IconReveal>
-          </div>
-        </div>
-      </div>
+      
+      {/* 🔥 Recruiter-friendly contact CTA */}
+      <ContactCTA />
+              
 
       {/* AI Status & Skills */}
       <div id="content" className="flex flex-col items-center mb-6">
@@ -238,6 +184,10 @@ export default function App() {
           </span>
         </div>
 
+      {/* NEW: Interactive horizontal timeline */}
+       <InteractiveTimeline items={experience} />
+
+
         {/* Stylish Skills (capped width) */}
         <div className="mx-auto max-w-[50rem] w-full">
           <ul className="flex flex-wrap justify-center gap-2">
@@ -264,17 +214,12 @@ export default function App() {
         </div>
       </div>
 
-      {/* Work Experience */}
-      <div className="w-full max-w-3xl px-4 mb-8">
-        <h2 className="text-2xl font-bold mb-4">Work Experience</h2>
-        <Timeline experience={experience} />
-      </div>
+      {/* Detailed but collapsible */}
+       <ExperienceDetails items={experience} />
 
-      {/* Education */}
-      <div className="w-full max-w-3xl px-4 mb-8">
-        <h2 className="text-2xl font-bold mb-4">Education</h2>
-        <EducationTimeline education={education} />
-      </div>
+        {/* Compact education tiles */}
+        <EducationGrid items={education} />
+
 
       {/* Resume */}
       <div className="mb-12">
@@ -287,9 +232,10 @@ export default function App() {
       <ChatPopup />
 
       {/* Footer */}
-      <footer className="w-full text-center text-gray-400 text-xs py-4">
+      <footer className="w-full text-center text-gray-400 text-xs py-2">
         © 2025 Manjit Singh
       </footer>
+    </div>
     </div>
   );
 }

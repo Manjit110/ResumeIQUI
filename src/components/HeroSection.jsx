@@ -2,8 +2,8 @@ import React from "react";
 
 export default function HeroSection() {
   return (
-    <div className="flex flex-col items-center gap-4 mb-6 pt-8"> 
-      {/* ↑ added pt-8 so image doesn't hit the browser top */}
+    <div className="flex flex-col items-center gap-2 mb-6 pt-8">
+      {/* ↑ pt-8 so image doesn't hit the browser top */}
 
       {/* Clickable profile image with glow + corner play badge */}
       <a
@@ -47,7 +47,10 @@ export default function HeroSection() {
           "
         >
           {/* subtle pulse aura */}
-          <span className="absolute inset-0 rounded-full animate-ping bg-pink-500/40" aria-hidden="true"></span>
+          <span
+            className="absolute inset-0 rounded-full animate-ping bg-pink-500/40"
+            aria-hidden="true"
+          ></span>
 
           {/* play icon */}
           <svg
@@ -84,6 +87,11 @@ export default function HeroSection() {
           <i className="fab fa-linkedin fa-2x"></i>
         </a>
       </div>
+
+      {/* Name in caps */}
+      <h1 className="mt-2 text-3xl font-extrabold tracking-widest text-gray-900 dark:text-white">
+        MANJIT SINGH
+      </h1>
     </div>
   );
 }

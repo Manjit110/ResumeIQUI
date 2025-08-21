@@ -152,9 +152,6 @@ const brandPrompt =
             aria-label="Open Manjit AI"
           >
             <FiMessageCircle className="text-white text-4xl" />
-            <span className="absolute -top-2 -right-2 text-[10px] font-bold bg-black text-white rounded-full px-1.5 py-0.5 shadow">
-              MJ
-            </span>
           </button>
         </div>
 

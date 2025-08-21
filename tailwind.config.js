@@ -23,5 +23,19 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.no-scrollbar': {
+          /* Firefox */
+          'scrollbar-width': 'none',
+          /* IE/Edge */
+          '-ms-overflow-style': 'none',
+        },
+        '.no-scrollbar::-webkit-scrollbar': {
+          display: 'none',
+        },
+      })
+    },
+  ],
 };
