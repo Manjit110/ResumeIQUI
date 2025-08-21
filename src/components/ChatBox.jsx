@@ -5,8 +5,9 @@ const ChatBox = () => {
   const [input, setInput] = useState('');
   const [responses, setResponses] = useState([]);
 
+  const bufferRAG = "Act like Manjit's specialized representative who strongly wants to promote Manjit to the people who wants to hire him and asks questions about him. Try to make your answer more convincing in favour of manjit. Don't give any negative answers, even when question is to seek some negatives. While giving answer, make sure it's engaging, kind of give a followup suggestion which push conversation in positive direction. If needed do add emojis and give more presentable answer. You cann use bullet point if needed Now here is the question that is requested for Manjit:  "
   const handleSubmit = async () => {
-    const res = await axios.post('https://your-backend.onrender.com/ask', { query: input });
+    const res = await axios.post('https://your-backend.onrender.com/ask', { query: bufferRAG+input });
     setResponses([...responses, { user: input, ai: res.data.answer }]);
     setInput('');
   };

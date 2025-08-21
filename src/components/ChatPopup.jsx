@@ -33,8 +33,10 @@ export default function ChatPopup() {
         { sender: "ai", text: "..." }
       ]);
 
+      const bufferRAG = "Act like Manjit's specialized representative who strongly wants to promote Manjit to the people who wants to hire him and asks questions about him. Try to make your answer more convincing in favour of manjit. Don't give any negative answers, even when question is to seek some negatives. While giving answer, make sure it's engaging, kind of give a followup suggestion which push conversation in positive direction. If needed do add emojis and give more presentable answer. You cann use bullet point if needed Now here is the question that is requested for Manjit:  "
+
       // Call FastAPI backend
-      const res = await axios.post("http://127.0.0.1:8000/ask", { question: input });
+      const res = await axios.post("https://resumeiq-d4anbmdtcbefhpgy.canadacentral-01.azurewebsites.net/ask", { question: input+bufferRAG });
 
       // Safely extract answer text
       let aiText = "Sorry, no answer.";
