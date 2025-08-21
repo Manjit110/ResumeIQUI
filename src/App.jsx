@@ -1,10 +1,17 @@
-// No state needed here
-// import React from "react";
+// Use state for small UI interactions
+import { useState } from "react";
 import ChatPopup from "./components/ChatPopup";
 import DownloadResumeButton from "./components/DownloadResumeButton";
 import Timeline from "./components/Timeline";
 import EducationTimeline from "./components/EducationTimeline";
 import HeroSection from "./components/HeroSection";
+
+// External icon library (proper icons only)
+import { FaLinkedin, FaPhoneAlt } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+
+import { CA } from "country-flag-icons/react/3x2";
+import { IN } from "country-flag-icons/react/3x2";
 
 const allSkills = [
   "Java 17", "Python", "Shell", "Spring Boot 2/3", "Spring MVC", "REST APIs", "Catalys FIX Engine", "Docker", "Podman",
@@ -67,12 +74,31 @@ const education = [
 export default function App() {
   // helper to scroll to the absolute bottom smoothly
   const scrollToBottom = () => {
-    const h = Math.max(
-      document.body.scrollHeight,
-      document.documentElement.scrollHeight
-    );
+    const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
     window.scrollTo({ top: h, behavior: "smooth" });
   };
+
+  // simple "click to reveal" popovers for contact icons
+  const [openInfo, setOpenInfo] = useState(null);
+  const toggle = (key) => setOpenInfo((prev) => (prev === key ? null : key));
+
+  const IconReveal = ({ id, icon: Icon, label, children }) => (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => toggle(id)}
+        aria-label={label}
+        className="p-2 rounded-full bg-white/80 dark:bg-white/5 border border-gray-200 dark:border-gray-800 shadow-sm hover:-translate-y-0.5 hover:shadow transition text-gray-800 dark:text-gray-200"
+      >
+        <Icon className="text-xl" />
+      </button>
+      {openInfo === id && (
+        <div className="absolute left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap rounded-xl border border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-lg px-3 py-1.5 text-sm z-20">
+          {children}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-b from-slate-100 to-blue-100 font-sans relative pb-16 scroll-smooth">
@@ -103,23 +129,47 @@ export default function App() {
         </div>
       </button>
 
-      {/* Contact (kept, but without duplicate photo) */}
+      {/* Contact (icons + flags; Canada line, India line) */}
       <div className="text-center -mt-2 mb-6">
-        <h1 className="text-3xl font-bold mb-1">Manjit Singh</h1>
-        <p className="text-lg text-gray-700 mb-1">
-          Toronto, ON • +1 (514)-549-1485 • <a href="mailto:manjitsingh07.1998@gmail.com" className="underline">Email</a>
-        </p>
-        <p className="text-lg text-gray-700 mb-1">
-          India • +91 81785 73640 • <a href="mailto:ms6554353@gmail.com" className="underline">Email</a>
-        </p>
-        <a
-          href="https://www.linkedin.com/in/manjit-singh-705996164/"
-          className="text-blue-600 hover:underline text-sm"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          linkedin.com/in/manjit-singh-705996164
-        </a>
+        <h1 className="text-3xl font-bold mb-2">Manjit Singh</h1>
+
+        {/* Canada line */}
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <CA title="Canada" className="w-7 h-auto rounded-[2px] shadow" />
+          <span className="text-sm text-gray-600">Canada</span>
+          <div className="flex items-center gap-2">
+            <IconReveal id="caPhone" icon={FaPhoneAlt} label="Canada phone">
+              <a href="tel:+15145491485" className="hover:underline">+1 (514) 549-1485</a>
+            </IconReveal>
+            <IconReveal id="caEmail" icon={MdEmail} label="Canada email">
+              <a href="mailto:manjitsingh07.1998@gmail.com" className="hover:underline">manjitsingh07.1998@gmail.com</a>
+            </IconReveal>
+            <IconReveal id="linkedin" icon={FaLinkedin} label="LinkedIn">
+              <a
+                href="https://www.linkedin.com/in/manjit-singh-705996164/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                linkedin.com/in/manjit-singh-705996164
+              </a>
+            </IconReveal>
+          </div>
+        </div>
+
+        {/* India line */}
+        <div className="flex items-center justify-center gap-3">
+          <IN title="India" className="w-7 h-auto rounded-[2px] shadow" />
+          <span className="text-sm text-gray-600">India</span>
+          <div className="flex items-center gap-2">
+            <IconReveal id="inPhone" icon={FaPhoneAlt} label="India phone">
+              <a href="tel:+918178573640" className="hover:underline">+91 81785 73640</a>
+            </IconReveal>
+            <IconReveal id="inEmail" icon={MdEmail} label="India email">
+              <a href="mailto:ms6554353@gmail.com" className="hover:underline">ms6554353@gmail.com</a>
+            </IconReveal>
+          </div>
+        </div>
       </div>
 
       {/* AI Status & Skills */}
@@ -171,7 +221,7 @@ export default function App() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M8 10h8M8 14h5m-9 6l2-2h9a4 4 0 004-4V7a4 4 0 00-4-4H7a4 4 0 00-4 4v11z" />
             </svg>
-            Chat with AI about me
+            AI gossip: All about Manjit 🔥
           </button>
 
           {/* Right arrow ← pointing to button */}
