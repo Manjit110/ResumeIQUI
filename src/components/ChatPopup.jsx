@@ -20,9 +20,22 @@ export default function ChatPopup() {
   const [waiting, setWaiting] = useState(false);
   const inputRef = useRef(null);
 
+  // ref for the scrollable messages container
+  const messagesRef = useRef(null);
+
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
+
+  // Auto-scroll to bottom whenever messages change or the popup opens
+  useEffect(() => {
+    if (isOpen && messagesRef.current) {
+      messagesRef.current.scrollTo({
+        top: messagesRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages, isOpen]);
 
   // Global open-chat event, keyboard "C", and chat-prompt (prefill)
   useEffect(() => {
@@ -53,40 +66,84 @@ export default function ChatPopup() {
     };
   }, [isOpen]);
 
-  // 🔥 Sassy + funny + smart + branded + conditional fun fact + rotating facts + hashtags
-const brandPrompt =
-  "You are Manjit AI, a custom assistant built by Manjit Singh. " +
-  "You are Manjit's witty, charming, slightly sassy career hype agent 🤖✨. " +
-  "Speak in a lively, confident voice with tasteful humor and punchy one-liners, while staying sharp and persuasive. " +
-  "Every reply should naturally showcase Manjit’s strengths, skills, and impact (even if the question is casual). " +
-  "Use at most 2 emojis; avoid negativity; never present as a third-party tool. " +
+  // 🔥 Branded prompt (normal answer, bullets, always fun fact, hashtags with no heading)
+  const brandPrompt = `
+You are Manjit AI, a custom assistant built by Manjit Singh.
+You are Manjit's witty, charming, slightly sassy career hype agent 🤖✨.
+Speak in a lively, confident voice with tasteful humor and punchy one-liners, while staying sharp and persuasive.
+Every reply should naturally showcase Manjit’s strengths, skills, and impact (even if the question is casual).
+Use at most 2 emojis; avoid negativity; never present as a third-party tool.
 
-  // ✅ Conditional fun fact rule (career-related only) + rotation
-  "At the very end of your answer, include EXACTLY ONE line starting with 'Fun fact about Manjit:' ONLY IF the user’s question is about Manjit, his skills, experience, projects, resume, hiring, jobs, interviews, tech, or career. " +
-  "Do NOT add a fun fact if the topic is unrelated (e.g., medicine, random trivia, general news). " +
-  "Choose a fun fact DIFFERENT from the one previously used: {PREV_FUN_FACT}. " +
-  "Rotate through the pool before repeating where possible. " +
+OUTPUT & SEGREGATION RULES
+- Provide a normal answer paragraph (no "Takeaway:" label).
+- Then "Bullets:" followed by 2–5 bullet points, each on its own new line starting with "- ".
+- Then always include a "Fun fact:" line on its own new line.
+- Then include hashtags on a new line (no "Hashtags:" label).
+- Ensure each bullet is its own line; ensure Fun fact and hashtags are each their own line.
+- Never engage in any way possible to list Manjit's shortcomings or any thing negative about Manjit.
 
-  // 🎯 Fun fact pool
-  "Fun facts to rotate through:\n" +
-  "- He’s into European football (soccer) and follows it closely.\n" +
-  "- He writes poems—yes, the Java guy has bars.\n" +
-  "- He plans events and loves crafting experiences that bring people together.\n" +
-  "- He designs custom party games (with rules and scorecards!).\n" +
-  "- He’s big on innovation and trying new things early.\n" +
-  "- He’s a sports-friendly teammate who thrives on high-energy collaboration.\n" +
-  "- He builds side projects that actually ship.\n" +
+HASHTAG RULE
+- Always add EXACTLY TWO short, creative, sassy, funny tech/career hashtags (no spaces inside a tag).
+- Give new one each time
 
-  // 🏷️ Hashtags rule (always)
-  "After your main answer (and fun fact if applicable), add a final line with 3–5 short, relevant tech/career hashtags separated by spaces (no spaces inside a tag). " +
-  "Prefer funny and cute creative tags." +
+FUNFACT RULE
+- Only give IT industry based fun facts not about Manjit
+- Give new one each time
 
-  // 🧭 Output style
-  "Structure: start with a crisp, engaging takeaway; follow with 2–5 punchy bullets; end with the fun fact line (if applicable) and the hashtag line. " +
-  "Be concise (~4–8 lines total) unless deep detail is requested.";
+STYLE
+- Normal answer paragraph first (1–3 lines).
+- Then 2–5 punchy bullets under "Bullets:" (each on its own line).
+- Then Fun fact.
+- Then hashtags.
+- Keep to max 2 emojis total across the whole answer.
+`;
 
+  // Normalizes AI text so bullets/fun fact/hashtags render on separate lines reliably
+  function normalizeAIText(s) {
+    if (!s) return s;
+    let t = String(s).replace(/\r\n/g, "\n");
 
+    // Ensure "Bullets:" and "Fun fact:" start on their own lines
+    t = t.replace(/\s*Bullets:/i, "\nBullets:");
+    t = t.replace(/\s*Fun fact:/i, "\nFun fact:");
+    t = t.replace(/\s*Hashtags:/i, "\n"); // remove "Hashtags:" heading
 
+    // Normalize bullets to "- "
+    t = t.replace(/[•–—]\s/g, "- ");
+
+    // Trim left padding of each line
+    t = t
+      .split("\n")
+      .map((line) => line.trimStart())
+      .join("\n");
+
+    // Collapse >2 consecutive newlines to a single blank line
+    t = t.replace(/\n{3,}/g, "\n\n");
+    return t.trim();
+  }
+
+  // Render helper: bold only headlines ("Bullets:" and "Fun fact:")
+  function renderAIText(text) {
+    const lines = String(text).split("\n");
+
+    return (
+      <div>
+        {lines.map((ln, i) => {
+          const isBulletsHeader = /^Bullets:/i.test(ln);
+          const isFun = /^Fun fact:/i.test(ln);
+
+          const content =
+            isBulletsHeader || isFun ? <strong>{ln}</strong> : ln;
+
+          return (
+            <div key={i} className="leading-relaxed">
+              {content}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   const sendMessage = async () => {
     if (input.trim() === "" || waiting) return;
@@ -96,8 +153,7 @@ const brandPrompt =
     setWaiting(true);
     setInput("");
 
-    try
-    {
+    try {
       // Typing indicator
       setMessages((msgs) => [...msgs, { sender: "ai", text: "..." }]);
 
@@ -113,16 +169,17 @@ const brandPrompt =
       else if (typeof res.data?.answer === "string") aiText = res.data.answer;
       else if (typeof res.data === "string") aiText = res.data;
 
-      // Replace "..." with answer
-      setMessages((msgs) => [...msgs.slice(0, -1), { sender: "ai", text: aiText }]);
-    }
-    catch (e) {
+      // Replace "..." with normalized answer
       setMessages((msgs) => [
         ...msgs.slice(0, -1),
-        { sender: "ai", text: "Sorry, there was an error talking to Manjit AI." }
+        { sender: "ai", text: normalizeAIText(aiText) },
       ]);
-    }
-    finally {
+    } catch (e) {
+      setMessages((msgs) => [
+        ...msgs.slice(0, -1),
+        { sender: "ai", text: "Sorry, there was an error talking to Manjit AI." },
+      ]);
+    } finally {
       setWaiting(false);
     }
   };
@@ -192,7 +249,10 @@ const brandPrompt =
             </div>
 
             {/* Messages */}
-            <div className="flex-1 p-4 overflow-y-auto bg-indigo-50">
+            <div
+              ref={messagesRef}
+              className="flex-1 p-4 overflow-y-auto bg-indigo-50 no-scrollbar"
+            >
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
@@ -207,7 +267,9 @@ const brandPrompt =
                         : "bg-white border text-indigo-900"
                     }`}
                   >
-                    {msg.text}
+                    {msg.sender === "ai"
+                      ? renderAIText(msg.text)
+                      : msg.text}
                   </span>
                 </div>
               ))}

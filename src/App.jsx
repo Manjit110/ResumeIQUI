@@ -51,7 +51,7 @@ const experience = [
   },
   {
     role: "Software Developer & Machine-Learning Intern",
-    company: "SASE Laboratory, DRDO",
+    company: "DRDO",
     location: "Chandigarh, India",
     dates: "01/2020 – 06/2020",
     logo: process.env.PUBLIC_URL + "/logos/drdo.png",
@@ -158,48 +158,88 @@ export default function App() {
           {/* Interactive horizontal timeline */}
           <InteractiveTimeline items={experience} />
 
-          {/* ===== Skills (horizontal, snap, invisible scrollbar) ===== */}
+        {/* ===== Skills (mobile full-bleed, desktop centered like Career Journey) ===== */}
 <section className="w-full mt-2">
-  <div className="mx-auto max-w-screen-lg px-4">
+  {/* Title (always centered) */}
+  <div className="mx-auto max-w-5xl px-4">
     <h2 className="text-2xl font-bold text-slate-900 text-center mb-4">Skills</h2>
+  </div>
 
-    {/* Edge-to-edge scroll without body overflow */}
-    <div
-      className="
-        -mx-4 px-4
-        overflow-x-auto no-scrollbar scroll-smooth
-        snap-x snap-mandatory
-        touch-pan-x overscroll-x-contain
-      "
-      aria-label="Scroll horizontally to view all skills"
-    >
-      <ul className="flex items-stretch gap-2 sm:gap-2.5 py-1 min-w-max">
-        {allSkills.map((skill) => (
-          <li
-            key={skill}
-            className="
-              snap-start shrink-0
-              rounded-full border border-gray-200 dark:border-gray-700
-              bg-white/70 dark:bg-white/5
-              px-3.5 py-1.5
-              text-xs sm:text-sm font-medium leading-tight
-              text-gray-800 dark:text-gray-200
-              shadow-sm backdrop-blur
-              hover:shadow-md transition hover:-translate-y-0.5
-              break-words
-            "
-          >
-            <span className="inline-flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500" />
-              {skill}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
+  {/* MOBILE: full-bleed horizontal rail */}
+  <div
+    className="
+      md:hidden
+      w-screen max-w-screen
+      overflow-x-auto no-scrollbar ios-bounce touch-pan-x scroll-smooth
+      px-4
+    "
+    aria-label="Scroll horizontally to view all skills (mobile)"
+  >
+    <ul className="inline-flex w-max items-stretch gap-2 sm:gap-2.5 py-1">
+      {allSkills.map((skill) => (
+        <li
+          key={skill}
+          className="
+            shrink-0
+            rounded-full border border-gray-200 dark:border-gray-700
+            bg-white/70 dark:bg-white/5
+            px-3.5 py-1.5
+            text-xs sm:text-sm font-medium leading-tight
+            text-gray-800 dark:text-gray-200
+            shadow-sm backdrop-blur
+            hover:shadow-md transition hover:-translate-y-0.5
+            break-words
+          "
+        >
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500" />
+            {skill}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  {/* DESKTOP/TABLET: centered container, not full-bleed (matches Career Journey width) */}
+  <div
+    className="
+      hidden md:block
+      mx-auto max-w-5xl
+      overflow-x-auto no-scrollbar scroll-smooth
+      px-4
+    "
+    aria-label="Scroll horizontally to view all skills (desktop)"
+  >
+    <ul className="inline-flex w-max items-stretch gap-2 sm:gap-2.5 py-1">
+      {allSkills.map((skill) => (
+        <li
+          key={skill}
+          className="
+            shrink-0
+            rounded-full border border-gray-200 dark:border-gray-700
+            bg-white/70 dark:bg-white/5
+            px-3.5 py-1.5
+            text-xs sm:text-sm font-medium leading-tight
+            text-gray-800 dark:text-gray-200
+            shadow-sm backdrop-blur
+            hover:shadow-md transition hover:-translate-y-0.5
+            break-words
+          "
+        >
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500" />
+            {skill}
+          </span>
+        </li>
+      ))}
+    </ul>
   </div>
 </section>
 {/* ===== End Skills ===== */}
+
+
+
+
 
         </div>
 

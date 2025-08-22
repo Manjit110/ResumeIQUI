@@ -27,14 +27,13 @@ module.exports = {
     function ({ addUtilities }) {
       addUtilities({
         '.no-scrollbar': {
-          /* Firefox */
-          'scrollbar-width': 'none',
-          /* IE/Edge */
-          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',          /* Firefox */
+          '-ms-overflow-style': 'none',       /* IE/Edge */
         },
-        '.no-scrollbar::-webkit-scrollbar': {
-          display: 'none',
-        },
+        '.no-scrollbar::-webkit-scrollbar': { display: 'none' },
+        /* 👇 iOS momentum + reliable horizontal swipe */
+        '.ios-bounce': { '-webkit-overflow-scrolling': 'touch' },
+        '.touch-pan-x': { 'touch-action': 'pan-x' },
       })
     },
   ],
