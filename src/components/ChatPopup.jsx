@@ -6,6 +6,84 @@ import axios from "axios";
 // Programmatic open from anywhere
 export const openChat = () => window.dispatchEvent(new CustomEvent("open-chat"));
 
+/** 🔁 Personal fun facts rotation (ordered, loops) — using your wording */
+const FUN_FACTS = [
+  "Manjit likes football.",
+  "Manjit's favorite player is Messi — but he respects Ronaldo too.",
+  "Manjit is into European football.",
+  "Manjit's favorite league is the UEFA Champions League.",
+  "Manjit's favorite club is Barcelona.",
+  "Manjit's favorite World Cup team is Argentina.",
+  "Manjit hosts parties with custom games he designs.",
+  "Manjit is sober — he doesn’t drink or smoke, yet he’s the most fun person in the room.",
+  "Manjit writes poems (he even published one in a Montreal local newspaper).",
+  "Manjit can hold his breath underwater for more than two minutes.",
+  "Manjit’s elder brother also works in the banking industry.",
+  "Manjit is very good at bowling."
+];
+
+/** 🔢 LocalStorage index helpers for rotation */
+function nextFromList(key, listLength) {
+  const raw = localStorage.getItem(key);
+  const idx = Number.isInteger(Number(raw)) ? Number(raw) : 0;
+  const nextIdx = (idx + 1) % listLength;
+  localStorage.setItem(key, String(nextIdx));
+  return idx; // return current, then increment for next call
+}
+function getNextFunFact() {
+  const i = nextFromList("mf_index", FUN_FACTS.length);
+  return FUN_FACTS[i];
+}
+
+/** 🧼 Normalizers & parsers */
+function normalizeNewlines(s) {
+  return String(s || "").replace(/\r\n/g, "\n");
+}
+
+// Grab ALL lines that look like they contain hashtags (robust)
+function collectHashtagLines(text) {
+  const lines = String(text).split("\n");
+  return lines
+    .map((l) => l.trim())
+    .filter((l) => /(?:^|\s)#[A-Za-z0-9_]+/.test(l)); // any line containing a hashtag token
+}
+
+// Remove ANY "Fun fact:" lines and ANY line containing hashtags (even if mixed with text)
+function stripAllFunFactsAndHashtags(text) {
+  return String(text)
+    .split("\n")
+    .filter((l) => {
+      const line = l.trim();
+      if (/^fun\s*fact\s*:/i.test(line)) return false;
+      if (/(^|\s)#[A-Za-z0-9_]+/.test(line)) return false;
+      return true;
+    })
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+// Compare two hashtag lines (order-insensitive)
+function sameHashtagPair(a, b) {
+  if (!a || !b) return false;
+  const norm = (line) =>
+    line
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((w) => w.startsWith("#"))
+      .sort()
+      .join(" ");
+  return norm(a) === norm(b);
+}
+
+// Nudge second tag minimally on collision
+function nudgeHashtagPair(line) {
+  const parts = line.trim().split(/\s+/);
+  if (parts.length >= 2) parts[1] = parts[1] + "Now"; // keep tag valid
+  return parts.join(" ");
+}
+
 export default function ChatPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -14,20 +92,17 @@ export default function ChatPopup() {
     {
       sender: "ai",
       text:
-        "Hi! I’m Manjit AI — a custom career assistant I designed and built. Ask me anything about my experience, skills, projects, or resume."
+        "Hi! I’m Manjit AI — your charming, witty career sidekick. Ask me anything about experience, skills, projects, or resume. Let’s make hiring managers swoon. 😉"
     }
   ]);
   const [waiting, setWaiting] = useState(false);
   const inputRef = useRef(null);
-
-  // ref for the scrollable messages container
   const messagesRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
 
-  // Auto-scroll to bottom whenever messages change or the popup opens
   useEffect(() => {
     if (isOpen && messagesRef.current) {
       messagesRef.current.scrollTo({
@@ -37,7 +112,6 @@ export default function ChatPopup() {
     }
   }, [messages, isOpen]);
 
-  // Global open-chat event, keyboard "C", and chat-prompt (prefill)
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
 
@@ -66,88 +140,37 @@ export default function ChatPopup() {
     };
   }, [isOpen]);
 
-  // 🔥 Branded prompt (normal answer, bullets, always fun fact, hashtags with no heading)
+  // --------- Prompts (mutually exclusive; back-end should add hashtags; NOT fun fact) ---------
   const brandPrompt = `
-You are Manjit AI, a custom assistant built by Manjit Singh.
-You are Manjit's witty, charming, slightly sassy career hype agent 🤖✨.
-Speak in a lively, confident voice with tasteful humor and punchy one-liners, while staying sharp and persuasive.
-Every reply should naturally showcase Manjit’s strengths, skills, and impact (even if the question is casual).
-Use at most 2 emojis; avoid negativity; never present as a third-party tool.
+[MODE:CAREER]
+You are Manjit AI, built by Manjit Singh — witty, charming, funny, playful and very sassy 🤖✨.
+Answer ONLY career topics (resume, experience, projects, skills, hiring, interviews, tech, job fit).
+Tone: confident, helpful, playful, funny, witty, sassy and very human; 2–3 emoji max.
 
-OUTPUT & SEGREGATION RULES
-- Provide a normal answer paragraph (no "Takeaway:" label).
-- If asked about Manjit's Skills, Past Work, Experience Then Only "Bullets:" followed by 2–5 bullet points, each on its own new line starting with "- ".
-- Then always include a "Fun fact:" line on its own new line.
-- Then include hashtags on a new line (no "Hashtags:" label).
-- Ensure each bullet is its own line; ensure Fun fact and hashtags are each their own line.
-- Never engage in any way possible to list Manjit's shortcomings or any thing negative about Manjit.
+FORMAT (exactly):
+<normal answer in paragraphs — no bullets>
 
-HASHTAG RULE
-- Always add EXACTLY TWO short, creative, sassy, funny tech/career hashtags (no spaces inside a tag).
-- Give new creative, sassy, funny tech/career hashtags each time
-- Dont repeat the previous given hashtags for new replies
+#<creativeHashtagOne> #<creativeHashtagTwo>
+- Hashtags MUST be relevant to the user’s question/answer (no generic placeholders).
+- Exactly two hashtags, no spaces inside tags.
+- No extra lines after hashtags.
+`.trim();
 
-FUNFACT RULE
-- Only give IT industry based fun facts not about Manjit
-- Give new give IT industry based fun facts each time
-- Dont repeat the previous given facts for new replies
+  const casualPrompt = `
+[MODE:CASUAL]
+You are a witty, charming, funny, playful, very sassy assistant 🤖✨.
+If the question is not about Manjit’s career, answer funny, witty, naturally and helpfully (concise), still humorous and human; 2–3 emoji max.
 
-STYLE
-- Normal answer paragraph first (1–3 lines).
-- Then 2–5 punchy bullets under "Bullets:" (each on its own line).
-- Then Fun fact.
-- Then hashtags.
-- Keep to max 2 emojis total across the whole answer.
-`;
+FORMAT (exactly):
+<normal answer in paragraphs — no bullets>
 
-  // Normalizes AI text so bullets/fun fact/hashtags render on separate lines reliably
-  function normalizeAIText(s) {
-    if (!s) return s;
-    let t = String(s).replace(/\r\n/g, "\n");
+#<creativeHashtagOne> #<creativeHashtagTwo>
+- Hashtags MUST be relevant to the user’s question/answer (no generic placeholders).
+- Exactly two hashtags, no spaces inside tags.
+- No extra lines after hashtags.
+`.trim();
 
-    // Ensure "Bullets:" and "Fun fact:" start on their own lines
-    t = t.replace(/\s*Bullets:/i, "\nBullets:");
-    t = t.replace(/\s*Fun fact:/i, "\nFun fact:");
-    t = t.replace(/\s*Hashtags:/i, "\n"); // remove "Hashtags:" heading
-
-    // Normalize bullets to "- "
-    t = t.replace(/[•–—]\s/g, "- ");
-
-    // Trim left padding of each line
-    t = t
-      .split("\n")
-      .map((line) => line.trimStart())
-      .join("\n");
-
-    // Collapse >2 consecutive newlines to a single blank line
-    t = t.replace(/\n{3,}/g, "\n\n");
-    return t.trim();
-  }
-
-  // Render helper: bold only headlines ("Bullets:" and "Fun fact:")
-  function renderAIText(text) {
-    const lines = String(text).split("\n");
-
-    return (
-      <div>
-        {lines.map((ln, i) => {
-          const isBulletsHeader = /^Bullets:/i.test(ln);
-          const isFun = /^Fun fact:/i.test(ln);
-
-          const content =
-            isBulletsHeader || isFun ? <strong>{ln}</strong> : ln;
-
-          return (
-            <div key={i} className="leading-relaxed">
-              {content}
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  const sendMessage = async () => {
+  async function sendMessage() {
     if (input.trim() === "" || waiting) return;
 
     const userText = input;
@@ -159,8 +182,18 @@ STYLE
       // Typing indicator
       setMessages((msgs) => [...msgs, { sender: "ai", text: "..." }]);
 
-      // Compose a single payload to your backend
-      const question = `${brandPrompt}\n\nUser asked: ${userText}`;
+      // Single, exclusive heuristic
+      const careerKeywords = [
+        "resume","cv","experience","project","projects","skills","hire","hiring",
+        "interview","job","fit","spring","java","solace","redis","cibc","drdo",
+        "capital markets","allocation","settlement","microservice","microservices",
+        "latency","podman","docker","kafka","mq","autosys","f5","nginx"
+      ];
+      const isCareer = careerKeywords.some(k => userText.toLowerCase().includes(k));
+
+      const prompt = isCareer ? brandPrompt : casualPrompt;
+      const question = `${prompt}\n\nUser asked: ${userText}`;
+
       const res = await axios.post(
         "https://resumeiq-d4anbmdtcbefhpgy.canadacentral-01.azurewebsites.net/ask",
         { question }
@@ -171,10 +204,33 @@ STYLE
       else if (typeof res.data?.answer === "string") aiText = res.data.answer;
       else if (typeof res.data === "string") aiText = res.data;
 
-      // Replace "..." with normalized answer
+      // 1) Normalize and pull ALL hashtag-like lines
+      const raw = normalizeNewlines(aiText);
+      const allHashtagLines = collectHashtagLines(raw);
+      const backendHashtags = allHashtagLines.length
+        ? allHashtagLines[allHashtagLines.length - 1] // keep only the LAST pair
+        : null;
+
+      // 2) Strip ALL fun facts + ALL hashtag lines from backend text
+      const answerOnly = stripAllFunFactsAndHashtags(raw);
+
+      // 3) Build single fun fact (rotating) + single hashtag line
+      const funPersonal = getNextFunFact();
+
+      const lastHashtags = localStorage.getItem("last_hashtags") || "";
+      // Fallback only if backend missed hashtags entirely
+      let finalHashtags = backendHashtags || "#CharmingCode #SassyBytes";
+      if (sameHashtagPair(finalHashtags, lastHashtags)) {
+        finalHashtags = nudgeHashtagPair(finalHashtags);
+      }
+      localStorage.setItem("last_hashtags", finalHashtags);
+
+      const finalMessage = `${answerOnly}\nFun fact: ${funPersonal}\n${finalHashtags}`;
+
+      // Replace "..." with final
       setMessages((msgs) => [
         ...msgs.slice(0, -1),
-        { sender: "ai", text: normalizeAIText(aiText) },
+        { sender: "ai", text: finalMessage },
       ]);
     } catch (e) {
       setMessages((msgs) => [
@@ -184,7 +240,7 @@ STYLE
     } finally {
       setWaiting(false);
     }
-  };
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") sendMessage();
@@ -266,12 +322,10 @@ STYLE
                     className={`px-3 py-2 rounded-lg max-w-xs inline-block text-sm ${
                       msg.sender === "user"
                         ? "bg-indigo-500 text-white"
-                        : "bg-white border text-indigo-900"
+                        : "bg-white border text-indigo-900 whitespace-pre-wrap"
                     }`}
                   >
-                    {msg.sender === "ai"
-                      ? renderAIText(msg.text)
-                      : msg.text}
+                    {msg.text}
                   </span>
                 </div>
               ))}
@@ -283,7 +337,7 @@ STYLE
                 <input
                   ref={inputRef}
                   className="flex-1 border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-400"
-                  placeholder="Ask Manjit AI anything about my experience…"
+                  placeholder="Ask Manjit AI anything…"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
