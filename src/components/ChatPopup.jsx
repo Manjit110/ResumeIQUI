@@ -195,7 +195,7 @@ FORMAT (exactly):
       const question = `${prompt}\n\nUser asked: ${userText}`;
 
       const res = await axios.post(
-        "https://resumeiq-d4anbmdtcbefhpgy.canadacentral-01.azurewebsites.net/ask",
+        "https://resumeiq-production-199f.up.railway.app/ask",
         { question }
       );
 
