@@ -237,19 +237,51 @@ export default function Home() {
           </section>
           {/* ===== End Skills ===== */}
 
-          {/* Deep-dive CTA */}
-          <Link
-            to="/achievements"
-            className="
-              mt-8 inline-flex items-center gap-2
-              rounded-xl border border-indigo-200
-              bg-white/80 backdrop-blur px-5 py-2.5
-              text-indigo-700 font-semibold shadow-sm
-              hover:shadow-md hover:-translate-y-0.5 transition
-            "
-          >
-            📊 Read the detailed case studies behind these results
-          </Link>
+          {/* Explore more — flashcards */}
+          <section className="w-full mt-10">
+            <div className="mx-auto max-w-5xl px-4">
+              <h2 className="text-2xl font-bold text-slate-900 text-center mb-4">
+                Explore More
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                <Link
+                  to="/achievements"
+                  className="
+                    group rounded-xl border border-indigo-200
+                    bg-white/80 backdrop-blur p-5 text-left
+                    shadow-sm hover:shadow-lg hover:-translate-y-1 transition
+                  "
+                >
+                  <div className="text-3xl mb-2">📊</div>
+                  <div className="font-bold text-slate-900 mb-1 group-hover:text-indigo-700 transition">
+                    Achievements &amp; Case Studies
+                  </div>
+                  <p className="text-sm text-slate-600">
+                    Deep-dive STAR write-ups behind the resume bullets — the
+                    problem, the fix, and the measured impact.
+                  </p>
+                </Link>
+
+                <Link
+                  to="/plan/scotiabank-software-engineer"
+                  className="
+                    group rounded-xl border border-indigo-200
+                    bg-white/80 backdrop-blur p-5 text-left
+                    shadow-sm hover:shadow-lg hover:-translate-y-1 transition
+                  "
+                >
+                  <div className="text-3xl mb-2">📅</div>
+                  <div className="font-bold text-slate-900 mb-1 group-hover:text-indigo-700 transition">
+                    90-Day Plan — Scotiabank
+                  </div>
+                  <p className="text-sm text-slate-600">
+                    A week-by-week plan for the Software Engineer (Digital
+                    Banking &amp; Authentication) role, mapped to the real JD.
+                  </p>
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
 
         {/* Details / Education */}
