@@ -275,8 +275,8 @@ export default function Home() {
                     90-Day Plan
                   </div>
                   <p className="text-sm text-slate-600">
-                    A week-by-week plan for the Software Engineer (Digital
-                    Banking &amp; Authentication) role, mapped to the real JD.
+                    A week-by-week plan for my first 90 days, mapped to the
+                    role's real requirements.
                   </p>
                 </Link>
               </div>
