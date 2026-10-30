@@ -272,7 +272,7 @@ export default function Home() {
                 >
                   <div className="text-3xl mb-2">📅</div>
                   <div className="font-bold text-slate-900 mb-1 group-hover:text-indigo-700 transition">
-                    90-Day Plan — Scotiabank
+                    90-Day Plan
                   </div>
                   <p className="text-sm text-slate-600">
                     A week-by-week plan for the Software Engineer (Digital

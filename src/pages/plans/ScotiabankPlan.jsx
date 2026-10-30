@@ -171,16 +171,9 @@ export default function ScotiabankPlan() {
           <FiArrowLeft /> Back to portfolio
         </Link>
 
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600 bg-indigo-50 rounded-full px-3 py-1 mb-3">
-          Prepared for Scotiabank
-        </span>
         <h1 className="text-3xl font-bold text-slate-900 text-center mb-2">
-          90-Day Plan — Software Engineer, Digital Banking &amp; Authentication
+          90-Day Plan
         </h1>
-        <p className="text-slate-600 text-center mb-10 max-w-xl">
-          A week-by-week plan for the first 90 days, built around the role's
-          actual requirements rather than a generic onboarding template.
-        </p>
 
         {/* JD mapping table */}
         <section className="w-full mb-12">
