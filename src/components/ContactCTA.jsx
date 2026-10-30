@@ -3,7 +3,6 @@ import VCardButton from "./VCardButton";
 import { FaPhoneAlt, FaLinkedin } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { CA } from "country-flag-icons/react/3x2";
-import { IN } from "country-flag-icons/react/3x2";
 import { FiCopy, FiCheck } from "react-icons/fi";
 
 // Tooltip + Copy icon
@@ -103,7 +102,7 @@ export default function ContactCTA() {
                 Save me to your contacts
               </h3>
               <p className="text-gray-600 text-xs sm:text-sm">
-                Canada & India numbers and emails included.
+                Canada number and email included.
               </p>
             </div>
 
@@ -116,7 +115,7 @@ export default function ContactCTA() {
           <div className="mt-4 h-px w-full bg-gradient-to-r from-transparent via-indigo-200 to-transparent" />
 
           {/* Contacts grid */}
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="mt-4 grid grid-cols-1 gap-2">
             {/* Canada */}
             <div className="flex items-center justify-between gap-3 rounded-xl bg-white/70 backdrop-blur border border-white/60 px-2.5 py-1.5 relative z-10">
               <div className="flex items-center gap-2 min-w-0">
@@ -138,29 +137,6 @@ export default function ContactCTA() {
                   value="manjitsingh07.1998@gmail.com"
                 />
                 <LinkedInIcon /> {/* Added LinkedIn here */}
-              </div>
-            </div>
-
-            {/* India */}
-            <div className="flex items-center justify-between gap-3 rounded-xl bg-white/70 backdrop-blur border border-white/60 px-2.5 py-1.5 relative z-0">
-              <div className="flex items-center gap-2 min-w-0">
-                <IN title="India" className="w-6 h-auto rounded-[2px] shadow" />
-                <div className="min-w-0">
-                  <div className="text-[13px] font-semibold text-gray-900">India</div>
-                  <div className="text-[11px] text-gray-600">—</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <TooltipCopyIcon
-                  icon={FaPhoneAlt}
-                  label="India phone"
-                  value="+91 81785 73640"
-                />
-                <TooltipCopyIcon
-                  icon={MdEmail}
-                  label="India email"
-                  value="ms6554353@gmail.com"
-                />
               </div>
             </div>
           </div>
